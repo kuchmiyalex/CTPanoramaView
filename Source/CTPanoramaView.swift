@@ -293,8 +293,12 @@ import ImageIO
 
                     }
 
-                    panoramaView.cameraNode.orientation = orientation
-
+                    // Apply the start angle adjustment for spherical panorama
+                    let startAngle = panoramaView.startAngle
+                    let startQuaternion = GLKQuaternionMakeWithAngleAndAxis(startAngle, 0, 1, 0)
+                    let currentOrientation = GLKQuaternionMake(orientation.x, orientation.y, orientation.z, orientation.w)
+                    let rotatedQuaternion = GLKQuaternionMultiply(startQuaternion, currentOrientation)
+                    panoramaView.cameraNode.orientation = SCNQuaternion(rotatedQuaternion.x, rotatedQuaternion.y, rotatedQuaternion.z, rotatedQuaternion.w)
                 }
 
                 panoramaView.reportMovement(CGFloat(-panoramaView.cameraNode.eulerAngles.y), panoramaView.xFov.toRadians())
